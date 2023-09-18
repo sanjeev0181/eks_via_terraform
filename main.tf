@@ -10,7 +10,7 @@ resource "aws_instance" "web" {
   key_name = "terraform"
   # Attach the security group to the instance
   vpc_security_group_ids = [aws_security_group.allow_tls.id]
-  user_data = file(${nginx.sh})
+  user_data =  "${file("nginx.sh")}"
   
   tags = {
     Name = "test-HelloWorld"
