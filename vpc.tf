@@ -7,7 +7,7 @@ resource "aws_vpc" "main" {
 }
 
 # Create subnet
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public-rt" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.1.0/24"
 
@@ -38,7 +38,7 @@ resource "aws_internet_gateway" "automated-igw" {
 # Nat Gateway
 
 resource "aws_nat_gateway" "nat_gateway" {
-  subnet_id     = aws_subnet.public.id
+  subnet_id     = aws_subnet.public-rt.id
 
   tags = {
     Name = "gw NAT"
@@ -83,7 +83,7 @@ resource "aws_route_table" "private-rt" {
 
 #route table association terraform
 resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public.id
+  subnet_id      = aws_subnet.public-rt.id
   route_table_id = aws_route_table.public-rt.id
 }
 
