@@ -1,18 +1,20 @@
+#1.Create VPC
+#2.
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    Name = "vpc"
+    Name = "Terraform-vpc"
   }
 }
 
 # Create subnet
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public-subnet" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.1.0/24"
 
   tags = {
-    Name = "public_subnets"
+    Name = "Terraform_public_subnets"
   }
 }
 
@@ -26,6 +28,7 @@ resource "aws_subnet" "private" {
 }
 
 # internet_gateway
+#Attach Internet gateway to vpc.
 
 resource "aws_internet_gateway" "automated-igw" {
   vpc_id = aws_vpc.main.id
@@ -38,10 +41,10 @@ resource "aws_internet_gateway" "automated-igw" {
 # Nat Gateway
 
 resource "aws_nat_gateway" "nat_gateway" {
-  subnet_id     = aws_subnet.public.id
+  subnet_id     = aws_subnet.public-subnet.id
 
   tags = {
-    Name = "gw NAT"
+    Name = "Terraform_gw_nat"
   }
 
   # To ensure proper ordering, it is recommended to add an explicit dependency
@@ -56,14 +59,14 @@ resource "aws_route_table" "public-rt" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block = "10.0.1.0/24"
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.automated-igw.id
   }
 
   
 
   tags = {
-    Name = "public-rt"
+    Name = "terraform_public-rt"
   }
 }
 
