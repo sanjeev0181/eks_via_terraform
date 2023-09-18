@@ -12,7 +12,7 @@ resource "aws_instance" "web" {
   vpc_security_group_ids = [aws_security_group.allow_tls.id]
   user_data = <<-EOF
             #!/bin/bash
-            sudo apt update,
+            sudo apt update
             sudo apt install nginx -y
         EOF
   
