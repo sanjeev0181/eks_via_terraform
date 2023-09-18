@@ -35,11 +35,24 @@ resource "aws_internet_gateway" "automated-igw" {
   }
 }
 
+# Nat Gateway
+
+resource "aws_nat_gateway" "nat_gateway" {
+  subnet_id     = aws_subnet.public.id
+
+  tags = {
+    Name = "gw NAT"
+  }
+
+  # To ensure proper ordering, it is recommended to add an explicit dependency
+  # on the Internet Gateway for the VPC.
+  depends_on = [aws_internet_gateway.automated-igw]
+}
 
 # Route Tables
 
 resource "aws_route_table" "public-rt" {
-  vpc_id = aws_vpc.example.id
+  vpc_id = aws_vpc.main.id
 
   route {
     cidr_block = "10.0.1.0/24"
@@ -58,7 +71,7 @@ resource "aws_route_table" "private-rt" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.example.id
+    gateway_id = aws_nat_gateway.main.id
   }
 
    tags = {
@@ -69,11 +82,11 @@ resource "aws_route_table" "private-rt" {
 
 #route table association terraform
 resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public_subnets_cidr.id
-  route_table_id = aws_route_table.public-route-table.id
+  subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.public-rt.id
 }
 
 resource "aws_route_table_association" "private" {
-  subnet_id      = aws_subnet.private_subnets_cidr.id
-  route_table_id = aws_route_table.private-route-table.id
+  subnet_id      = aws_subnet.private.id
+  route_table_id = aws_route_table.private-rt.id
 }
