@@ -38,9 +38,17 @@ resource "aws_internet_gateway" "automated-igw" {
   }
 }
 
+#Elastic ip
+
+resource "aws_eip" "auto_elb" {
+
+}
+
+
 # Nat Gateway
 
 resource "aws_nat_gateway" "nat_gateway" {
+  allocation_id = aws_eip.auto_elb.id
   subnet_id     = aws_subnet.public-subnet.id
 
   tags = {
