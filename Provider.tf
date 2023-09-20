@@ -14,11 +14,10 @@ provider "aws" {
 }
 # Create S3 Bucket
 
-resource "aws_s3_bucket" "example" {
-  bucket = "terraform.tfstate"
-
-  tags = {
-    Name        = "My bucket"
-    Environment = "Dev"
+terraform {
+  backend "s3" {
+    bucket = "terraform-jenkins-bucket02"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
   }
 }
